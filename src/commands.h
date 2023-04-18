@@ -42,6 +42,9 @@ const std::string VCEK_CERT_CHAIN_PEM_FILENAME    = "cert_chain.pem";
 const std::string VCEK_ASK_PEM_FILENAME           = "ask.pem";
 const std::string VCEK_ARK_PEM_FILENAME           = "ark.pem";
 
+const std::string VLEK_DER_FILENAME               = "vlek.der";
+const std::string VLEK_PEM_FILENAME               = "vlek.pem";
+
 const std::string CERTS_ZIP_FILENAME              = "certs_export";             // export_cert_chain
 const std::string CERTS_VCEK_ZIP_FILENAME         = "certs_export_vcek";        // export_cert_chain_vcek
 const std::string ASK_ARK_FILENAME                = "ask_ark.cert";             // get_ask_ark
@@ -62,6 +65,7 @@ const std::string PACKAGED_SECRET_FILENAME        = "packaged_secret.bin";      
 const std::string PACKAGED_SECRET_HEADER_FILENAME = "packaged_secret_header.bin";// package_secret
 const std::string ATTESTATION_REPORT_FILENAME     = "attestation_report.bin";   // validate_attestation
 const std::string GUEST_REPORT_FILENAME           = "guest_report.bin";         // validate_guest_report
+const std::string VLEK_GUEST_REPORT_FILENAME	  = "vlek_guest_report.bin";    // validate_guest_report_vlek
 
 constexpr uint32_t BITS_PER_BYTE    = 8;
 constexpr uint32_t NIST_KDF_H_BYTES = 32;
@@ -157,6 +161,7 @@ public:
     int package_secret(void);
     int validate_attestation(void);
     int validate_guest_report(void);
+    int validate_guest_report_vlek(void);
     int validate_cert_chain_vcek(void);
 };
 

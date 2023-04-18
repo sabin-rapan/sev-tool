@@ -65,6 +65,7 @@ const char help_array[] =  "The following commands are supported:\n" \
                     "  package_secret\n" \
                     "  validate_attestation\n" \
                     "  validate_guest_report\n" \
+                    "  validate_guest_report_vlek\n" \
                     "  validate_cert_chain_vcek\n" \
                     "  export_cert_chain_vcek\n" \
                     ;
@@ -102,6 +103,7 @@ static struct option long_options[] =
     {"package_secret",           no_argument,       0, 'w'},
     {"validate_attestation",     no_argument,       0, 'x'}, // SEV attestation command
     {"validate_guest_report",    no_argument,       0, 'y'}, // SNP GuestRequest ReportRequest
+    {"validate_guest_report_vlek",    no_argument,       0, 'Y'}, // SNP GuestRequest ReportRequest
     {"validate_cert_chain_vcek", no_argument,       0, 'z'},
 
     /* Run tests */
@@ -305,6 +307,11 @@ int main(int argc, char **argv)
             case 'y': {         // VALIDATE_GUEST_REPORT
                 Command cmd(output_folder, verbose_flag, CCP_NOT_REQ);
                 cmd_ret = cmd.validate_guest_report();
+                break;
+            }
+            case 'Y': {         // VALIDATE_GUEST_REPORT
+                Command cmd(output_folder, verbose_flag, CCP_NOT_REQ);
+                cmd_ret = cmd.validate_guest_report_vlek();
                 break;
             }
             case 'z': {         // VALIDATE_CERT_CHAIN_VCEK

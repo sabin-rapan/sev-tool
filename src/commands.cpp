@@ -1120,6 +1120,64 @@ int Command::validate_guest_report(void)
     return (int)cmd_ret;
 }
 
+int Command::validate_guest_report_vlek(void)
+{
+    int cmd_ret = ERROR_UNSUPPORTED;
+    std::string report_file = m_output_folder + VLEK_GUEST_REPORT_FILENAME;
+    std::string vlek_file = m_output_folder + VLEK_PEM_FILENAME;
+    bool success = false;
+    EVP_PKEY *vlek_pub_key = NULL;
+    X509 *x509_vlek = NULL;
+
+    do {
+        // Get the size of the report, so we can allocate that much memory
+        size_t report_size = sev::get_file_size(report_file);
+        if (report_size != sizeof(snp_attestation_report_t)) {
+            printf("Error: The size of the attestation report is %ld bytes\n", sizeof(snp_attestation_report_t));
+            break;
+        }
+        uint8_t report_mem[report_size];
+        snp_attestation_report_t *report = (snp_attestation_report_t *)report_mem;
+
+        if (sev::read_file(report_file, report_mem, report_size) != report_size)
+            break;
+
+        if (!read_pem_into_x509(vlek_file, &x509_vlek))
+            break;
+	X509_print_fp(stdout, x509_vlek);
+
+        vlek_pub_key = X509_get_pubkey(x509_vlek);
+        if (!vlek_pub_key)
+            break;
+
+        // Print the key
+	BIO *out2;
+	out2 = BIO_new_fp(stdout, BIO_NOCLOSE);
+	EVP_PKEY_print_public(out2, vlek_pub_key, 2, NULL);
+	EVP_PKEY_print_params(out2, vlek_pub_key, 3, NULL);
+	BIO_free(out2);
+
+        // Validate the report
+        success = verify_message((sev_sig *)&report->signature,
+                                  &vlek_pub_key, report_mem,
+                                  offsetof(snp_attestation_report_t, signature),
+                                  SEV_SIG_ALGO_ECDSA_SHA384);
+        if (!success) {
+            printf("Error: Guest report failed to validate\n");
+            break;
+        }
+
+        printf("Guest report validated successfully!\n");
+        cmd_ret = STATUS_SUCCESS;
+    } while (0);
+
+    // Free memory
+    EVP_PKEY_free(vlek_pub_key);
+    X509_free(x509_vlek);
+
+    return (int)cmd_ret;
+}
+
 int Command::validate_cert_chain_vcek(void)
 {
     int cmd_ret = ERROR_UNSUPPORTED;
