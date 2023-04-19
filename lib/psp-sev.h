@@ -81,12 +81,19 @@ typedef enum {
  * @guest_count: number of active guests
  */
 struct sev_user_data_status {
-    __u8 api_major;                /* Out */
-    __u8 api_minor;                /* Out */
-    __u8 state;                    /* Out */
-    __u32 flags;                   /* Out */
-    __u8 build;                    /* Out */
-    __u32 guest_count;             /* Out */
+	__u8 api_major;             /* Out */
+	__u8 api_minor;             /* Out */
+	__u8 state;                 /* Out */
+	__u8 is_rmp_initialized:1;  /* Out */
+	__u8 rsvd:7;
+	__u32 build_id;             /* Out */
+	__u32 mask_chip_id:1;       /* Out */
+	__u32 mask_chip_key:1;      /* Out */
+	__u32 vlek_en:1;            /* Out */
+	__u32 rsvd1:29;
+	__u32 guest_count;          /* Out */
+	__u64 current_tcb_version;  /* Out */
+	__u64 reported_tcb_version; /* Out */
 } __attribute__((packed));
 
 /**

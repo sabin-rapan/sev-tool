@@ -1156,7 +1156,9 @@ typedef struct __attribute__ ((__packed__)) snp_platform_status_buffer_t
     uint8_t  reserved    : 7;   /* bits 1 to 7 */
     uint32_t build_id;
     uint8_t  mask_chip_id : 1;  /* bit 0 */
-    uint32_t reserved2    : 31; /* bits 1 to 31 */
+    uint8_t  mask_chip_key : 1;  /* bit 0 */
+    uint8_t  vlek_en : 1;  /* bit 0 */
+    uint32_t reserved2    : 29; /* bits 1 to 31 */
     uint32_t guest_count;       /* SNP Guest count */
     uint64_t tcb_version;       /* Platform/installed version */
     uint64_t reported_tcb;      /* SetReportedTCB() version */

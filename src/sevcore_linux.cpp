@@ -273,7 +273,7 @@ int SEVDevice::sev_ioctl(int cmd, void *data, int *cmd_ret)
             return ioctl_ret;
 
         if (status_data.api_major == 0 && status_data.api_minor <= 17 &&
-            status_data.build < 19) {
+            status_data.build_id < 19) {
             printf("Adding a 5 second delay to account for Naples GetID bug...\n");
             ioctl_ret = ioctl(get_fd(), SEV_ISSUE_CMD, &arg);
             usleep(5000000);    // 5 seconds
@@ -304,12 +304,14 @@ int SEVDevice::factory_reset()
 
 int SEVDevice::get_platform_owner(void *data)
 {
-    return ((sev_user_data_status *)data)->flags & PLAT_STAT_OWNER_MASK;
+    //return ((sev_user_data_status *)data)->flags & PLAT_STAT_OWNER_MASK;
+    return 0;
 }
 
 int SEVDevice::get_platform_es(void *data)
 {
-    return ((sev_user_data_status *)data)->flags & PLAT_STAT_ES_MASK;
+    //return ((sev_user_data_status *)data)->flags & PLAT_STAT_ES_MASK;
+    return 0;
 }
 
 int SEVDevice::platform_status(uint8_t *data)
@@ -319,7 +321,7 @@ int SEVDevice::platform_status(uint8_t *data)
     // Set struct to 0
     memset(data, 0, sizeof(sev_user_data_status));
 
-    sev_ioctl(SEV_PLATFORM_STATUS, data, &cmd_ret);
+    sev_ioctl(SEV_SNP_PLATFORM_STATUS, data, &cmd_ret);
 
     return (int)cmd_ret;
 }

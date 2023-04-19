@@ -57,8 +57,8 @@ int Command::factory_reset(void)
 
 int Command::platform_status(void)
 {
-    uint8_t data[sizeof(sev_platform_status_cmd_buf)];
-    sev_platform_status_cmd_buf *data_buf = (sev_platform_status_cmd_buf *)&data;
+    uint8_t data[sizeof(snp_platform_status_buffer_t)];
+    snp_platform_status_buffer_t *data_buf = (snp_platform_status_buffer_t*)data;
     int cmd_ret = -1;
 
     cmd_ret = m_sev_device->platform_status(data);
@@ -67,18 +67,12 @@ int Command::platform_status(void)
         // Print ID arrays
         printf("api_major:\t%d\n", data_buf->api_major);
         printf("api_minor:\t%d\n", data_buf->api_minor);
-        printf("platform_state:\t%d\n", data_buf->current_platform_state);
-        if (sev::min_api_version(data_buf->api_major, data_buf->api_minor, 0, 17)) {
-            printf("owner:\t\t%d\n", data_buf->owner);
-            printf("config:\t\t%d\n", data_buf->config);
-        }
-        else {
-            printf("flags:\t\t%d\n",
-                    ((data_buf->owner & PLAT_STAT_OWNER_MASK) << PLAT_STAT_OWNER_MASK) +
-                    ((data_buf->config & PLAT_STAT_ES_MASK) << PLAT_STAT_CONFIGES_OFFSET));
-        }
+        printf("platform_state:\t%d\n", data_buf->state);
         printf("build:\t\t%d\n", data_buf->build_id);
         printf("guest_count:\t%d\n", data_buf->guest_count);
+        printf("tcb_version:\t0x%lx\n", data_buf->tcb_version);
+        printf("reported_tcb_version:\t0x%lx\n", data_buf->reported_tcb);
+        printf("vlek_en:\t0x%lx\n", data_buf->vlek_en);
     }
 
     return (int)cmd_ret;
