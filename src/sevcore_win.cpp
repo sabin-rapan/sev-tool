@@ -117,6 +117,14 @@ int SEVDevice::pek_cert_import(uint8_t *data,
     return cmd_ret;
 }
 
+// todo. dont want to be reading from a file. use openssl to generate
+int SEVDevice::vlek_load(uint8_t *data)
+{
+    int cmd_ret = -1;
+
+    return cmd_ret;
+}
+
 // Must always pass in 128 bytes array, because of how linux /dev/sev ioctl works
 int SEVDevice::get_id(void *data, void *id_mem, uint32_t id_length)
 {

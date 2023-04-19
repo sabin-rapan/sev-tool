@@ -282,9 +282,9 @@ int SEVDevice::sev_ioctl(int cmd, void *data, int *cmd_ret)
 
     ioctl_ret = ioctl(get_fd(), SEV_ISSUE_CMD, &arg);
     *cmd_ret = arg.error;
-    // if (ioctl_ret != 0) {    // Sometimes you expect it to fail
-    //     printf("Error: cmd %#x ioctl_ret=%d (%#x)\n", cmd, ioctl_ret, arg.error);
-    // }
+    if (ioctl_ret != 0) {    // Sometimes you expect it to fail
+	    printf("Error: cmd %#x ioctl_ret=%d (%#x) errno: %d\n", cmd, ioctl_ret, arg.error, errno);
+    }
 
     return ioctl_ret;
 }
@@ -443,6 +443,32 @@ int SEVDevice::pek_cert_import(uint8_t *data, sev_cert *signed_pek_csr,
         ioctl_ret = sev_ioctl(SEV_PEK_CERT_IMPORT, data_buf, &cmd_ret);
         if (ioctl_ret != 0)
             break;
+
+    } while (0);
+
+    return (int)cmd_ret;
+}
+
+int SEVDevice::vlek_load(uint8_t *data)
+{
+    sev_user_data_snp_wrapped_vlek_hashstick wrapped_vlek;
+    sev_user_data_snp_vlek_load vlek_load;
+    int cmd_ret = SEV_RET_UNSUPPORTED;
+    int ioctl_ret = -1;
+
+    memset(&wrapped_vlek, 0, sizeof(wrapped_vlek));
+    memset(&vlek_load, 0, sizeof(vlek_load));
+    memcpy(wrapped_vlek.data, data, sizeof(wrapped_vlek.data));
+
+    vlek_load.vlek_wrapped_address = (uint64_t)(&wrapped_vlek);
+    vlek_load.length = sizeof(vlek_load);
+
+    do {
+	ioctl_ret = sev_ioctl(SEV_SNP_VLEK_LOAD, &vlek_load, &cmd_ret);
+        printf("SNP_VLEK_LOAD ioctl_ret %d cmd_ret %d\n", ioctl_ret, cmd_ret);
+
+	if (ioctl_ret != 0)
+		break;
 
     } while (0);
 

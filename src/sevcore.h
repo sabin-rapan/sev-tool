@@ -128,6 +128,7 @@ public:
                         void *cert_chain_mem);
     int pek_cert_import(uint8_t *data, sev_cert *pek_csr,
                         sev_cert *oca_cert);
+    int vlek_load(uint8_t *data);
     int get_id(void *data, void *id_mem, uint32_t id_length = 0);
 
     int sys_info();

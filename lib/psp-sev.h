@@ -34,6 +34,9 @@ enum {
     SEV_SNP_PLATFORM_STATUS,   // 0x9
     SEV_SNP_SET_EXT_CONFIG,    // 0xA
     SEV_SNP_GET_EXT_CONFIG,    // 0xB
+    SEV_SNP_DOWNLOAD_FIRMWARE_EX, // 0xC
+    SEV_SNP_COMMIT,	       // 0xD
+    SEV_SNP_VLEK_LOAD,	       // 0xE
 
     SEV_MAX,
 };

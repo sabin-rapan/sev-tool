@@ -1178,6 +1178,27 @@ int Command::validate_guest_report_vlek(void)
     return (int)cmd_ret;
 }
 
+int Command::vlek_load(std::string vlek_file)
+{
+    uint8_t vlek[sizeof(sev_user_data_snp_wrapped_vlek_hashstick)];
+    int cmd_ret = -1;
+
+    do {
+        if (sev::read_file(vlek_file, vlek, sizeof(vlek)) != sizeof(vlek)) {
+            cmd_ret = ERROR_INVALID_CERTIFICATE;
+            break;
+        }
+
+        cmd_ret = m_sev_device->vlek_load(vlek);
+        if (cmd_ret != 0)
+            break;
+
+        printf("VLEK load SUCCESS.\n");
+    } while (0);
+
+    return (int)cmd_ret;
+}
+
 int Command::validate_cert_chain_vcek(void)
 {
     int cmd_ret = ERROR_UNSUPPORTED;

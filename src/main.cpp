@@ -68,6 +68,9 @@ const char help_array[] =  "The following commands are supported:\n" \
                     "  validate_guest_report_vlek\n" \
                     "  validate_cert_chain_vcek\n" \
                     "  export_cert_chain_vcek\n" \
+                    "  vlek_load\n" \
+                    "      Input params:\n" \
+                    "          vlek.bin file\n" \
                     ;
 
 /* Flag set by '--verbose' */
@@ -81,30 +84,31 @@ static struct option long_options[] =
 
     /* These options don't set a flag. We distinguish them by their indices. */
     /* Platform Owner commands */
-    {"factory_reset",            no_argument,       0, 'a'},
-    {"platform_status",          no_argument,       0, 'b'},
-    {"pek_gen",                  no_argument,       0, 'c'},
-    {"pek_csr",                  no_argument,       0, 'd'},
-    {"pdh_gen",                  no_argument,       0, 'e'},
-    {"pdh_cert_export",          no_argument,       0, 'f'},
-    {"pek_cert_import",          required_argument, 0, 'g'},
-    {"get_id",                   no_argument,       0, 'j'},
-    {"set_self_owned",           no_argument,       0, 'k'},
-    {"set_externally_owned",     required_argument, 0, 'l'},
-    {"generate_cek_ask",         no_argument,       0, 'm'},
-    {"export_cert_chain",        no_argument,       0, 'p'},
-    {"export_cert_chain_vcek",   no_argument,       0, 'q'},
-    {"sign_pek_csr",             required_argument, 0, 's'},
+    {"factory_reset",			no_argument,       0, 'a'},
+    {"platform_status",          	no_argument,       0, 'b'},
+    {"pek_gen",                  	no_argument,       0, 'c'},
+    {"pek_csr",                  	no_argument,       0, 'd'},
+    {"pdh_gen",                  	no_argument,       0, 'e'},
+    {"pdh_cert_export",          	no_argument,       0, 'f'},
+    {"pek_cert_import",          	required_argument, 0, 'g'},
+    {"get_id",                   	no_argument,       0, 'j'},
+    {"set_self_owned",           	no_argument,       0, 'k'},
+    {"set_externally_owned",     	required_argument, 0, 'l'},
+    {"generate_cek_ask",         	no_argument,       0, 'm'},
+    {"export_cert_chain",        	no_argument,       0, 'p'},
+    {"export_cert_chain_vcek",   	no_argument,       0, 'q'},
+    {"sign_pek_csr",             	required_argument, 0, 's'},
     /* Guest Owner commands */
-    {"get_ask_ark",              no_argument,       0, 'n'},
-    {"calc_measurement",         required_argument, 0, 't'},
-    {"validate_cert_chain",      no_argument,       0, 'u'},
-    {"generate_launch_blob",     required_argument, 0, 'v'},
-    {"package_secret",           no_argument,       0, 'w'},
-    {"validate_attestation",     no_argument,       0, 'x'}, // SEV attestation command
-    {"validate_guest_report",    no_argument,       0, 'y'}, // SNP GuestRequest ReportRequest
-    {"validate_guest_report_vlek",    no_argument,       0, 'Y'}, // SNP GuestRequest ReportRequest
-    {"validate_cert_chain_vcek", no_argument,       0, 'z'},
+    {"get_ask_ark",			no_argument,       0, 'n'},
+    {"calc_measurement",         	required_argument, 0, 't'},
+    {"validate_cert_chain",      	no_argument,       0, 'u'},
+    {"generate_launch_blob",     	required_argument, 0, 'v'},
+    {"package_secret",           	no_argument,       0, 'w'},
+    {"validate_attestation",     	no_argument,       0, 'x'}, // SEV attestation command
+    {"validate_guest_report",    	no_argument,       0, 'y'}, // SNP GuestRequest ReportRequest
+    {"validate_guest_report_vlek",	no_argument,       0, 'Y'}, // SNP GuestRequest ReportRequest
+    {"validate_cert_chain_vcek",	no_argument,       0, 'z'},
+    {"vlek_load",			required_argument, 0, 'Z'},
 
     /* Run tests */
     {"test_all",             no_argument,       0, 'T'},
@@ -317,6 +321,18 @@ int main(int argc, char **argv)
             case 'z': {         // VALIDATE_CERT_CHAIN_VCEK
                 Command cmd(output_folder, verbose_flag, CCP_NOT_REQ);
                 cmd_ret = cmd.validate_cert_chain_vcek();
+                break;
+            }
+            case 'Z': {         // VLEK_LOAD
+                optind--;   // Can't use option_index because it doesn't account for '-' flags
+                if (argc - optind != 1) {
+                    printf("Error: Expecting exactly 1 args for vlek_load\n");
+                    return false;
+                }
+                std::string vlek_file = argv[optind++];
+
+                Command cmd(output_folder, verbose_flag);
+                cmd_ret = cmd.vlek_load(vlek_file);
                 break;
             }
             case 'T': {         // Run Tests

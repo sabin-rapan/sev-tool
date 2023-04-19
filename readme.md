@@ -478,6 +478,17 @@ This command calls the get_id command and passes that ID into the AMD KDS server
          ```sh
          $ sudo ./sevtool --ofolder ./certs --export_cert_chain_vcek
          ```
+23. vlek_load
+     - This command loads a VLEK hashstick into the PSP.
+     - Required input args:
+         - The VLEK binary
+     - Files read in: [vlek_file]
+     - Outputs: none
+     - Platform/Guest Owner: Platform Owner
+     - Example
+         ```sh
+         $ sudo ./sevtool --vlek-load vlek.bin
+         ```
 
 ## Running tests
 To run tests to check that each command is functioning correctly, run the test_all command and check that the entire thing returns success.

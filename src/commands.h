@@ -163,6 +163,7 @@ public:
     int validate_guest_report(void);
     int validate_guest_report_vlek(void);
     int validate_cert_chain_vcek(void);
+    int vlek_load(std::string vlek_file);
 };
 
 #endif /* COMMANDS_H */

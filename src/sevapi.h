@@ -117,6 +117,7 @@ typedef enum __attribute__((mode(HI))) SEV_API_COMMAND
     SNP_PLATFORM_STATUS     = 0x83,     /* Return status of the Platform */
     SNP_DF_FLUSH            = 0x84,     /* Flush the data fabric */
     SNP_INIT_EX             = 0x85,     /* Initialize the Platform with Parameter */
+    SNP_VLEK_LOAD	    = 0xCD,
 
     /* SNP Guest commands */
     SNP_DECOMMISSION        = 0x90,     /* Delete the Guest's SEV context */
@@ -1420,6 +1421,19 @@ typedef struct __attribute__ ((__packed__)) snp_config_cmd_buf_t
     uint32_t reserved     : 31; /* bits 1 to 31 */
     uint8_t  reserved2[0x40-0xC];
 } snp_config_cmd_buf;
+
+typedef struct __attribute__ ((__packed__)) sev_user_data_snp_wrapped_vlek_hashstick_t
+{
+    uint8_t  data[432];
+} sev_user_data_snp_wrapped_vlek_hashstick;
+
+typedef struct __attribute__ ((__packed__)) sev_user_data_snp_vlek_load_t
+{
+	uint32_t length;
+	uint32_t vlek_wrapped_version:8;
+	uint32_t rsvd:24;
+	uint64_t vlek_wrapped_address;
+} sev_user_data_snp_vlek_load;
 
 // Defines
 #define IMI_EN (true)   // SNP_LAUNCH_START_PARAMS
